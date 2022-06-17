@@ -1,2 +1,2 @@
 # WebSockets
-Working with websockets
+Getting familiar working with websockets. How to use and implement them.
