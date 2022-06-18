@@ -5,11 +5,14 @@ import websockets
 async def handler(websocket): 
     while True:
         # await is used to wait for websocket.recv() to do something whether fails/completes
-        message = await websocket.recv() 
+        try:
+            message = await websocket.recv() 
+        except websockets.ConnectionClosedOK:
+            break
         print(message)
 
 async def main():
-    async with websockets.server(handler, "", 80001):
+    async with websockets.serve(handler, "", 8001):
         await asyncio.Future()
 
 if __name__ == "__main__":
