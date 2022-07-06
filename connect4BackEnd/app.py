@@ -10,6 +10,10 @@ async def handler(websocket):
         except websockets.ConnectionClosedOK:
             break
         print(message)
+    # This is common so you can do:
+    # async def handler(websocket):
+    #   async for message in websocket:
+    #   print(message)
 
 async def main():
     async with websockets.serve(handler, "", 8001):
