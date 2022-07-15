@@ -1,19 +1,15 @@
 import { createBoard, playMove } from "./connect4.js";
 
-window.addEventListener("DOMContentLoaded", () => {
-  // Initialize the UI.
-  const board = document.querySelector(".board");
-  createBoard(board);
-  const websocket = new WebSocket("ws://localhost:8001/"); // Creates websocket
-  initGame(websocket);
-  recieveMoves(board, websocket);
-  sendMoves(board, websocket);
-});
 
 
 function initGame(websocket) {
   websocket.addEventListener("open", () => {
-    const event  = {type: "init"};
+    const params = new URLSearchParams(window.location.search);
+    let event =  {type: "init"};
+    if (params.has("join"))
+    {
+      event.join = params.get("join");
+    }
     websocket.send(JSON.stringify(event));
   });
 }
@@ -62,3 +58,13 @@ function recieveMoves(board, websocket) {
     }
   });
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  // Initialize the UI.
+  const board = document.querySelector(".board");
+  createBoard(board);
+  const websocket = new WebSocket("ws://localhost:8001/"); // Creates websocket
+  initGame(websocket);
+  recieveMoves(board, websocket);
+  sendMoves(board, websocket);
+});

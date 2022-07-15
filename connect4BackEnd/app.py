@@ -6,6 +6,28 @@ from connect4 import PLAYER1, PLAYER2, Connect4
 import secrets # Library used to generate secure random numbers for managing secrets
 
 JOIN = {} # Global dictionary variable that holds each user's unique key, each key contains the game and socket connection.
+async def error(websocket, message):
+    event = {
+        "type": "error", 
+        "message": message
+    }
+    await websocket.send(json.dumps(event))
+
+async def join(websocket, join_key):
+    try:
+        game, connected = JOIN[join_key]
+    except KeyError:
+        await error(websocket, "Game not found.")
+        return
+
+    connected.add(websocket)
+
+    try:
+        print("second player joined game", id(game))
+        async for message in websocket:
+            print("second player sent", message)
+    finally:
+        connected.remove(websocket)
 
 async def start(websocket):
     # Initialize a Connect Four game.
@@ -29,11 +51,14 @@ async def start(websocket):
 
 
 async def handler(websocket):
-
     message = await websocket.recv()
     event = json.loads(message)
     assert event["type"] == "init"
-    await start(websocket)
+
+    if "join" in event:
+        await join(websocket, event["join"])
+    else:
+        await start(websocket)
 
     # Players take alternate turns, using the same browser.
     turns = itertools.cycle([PLAYER1, PLAYER2])
