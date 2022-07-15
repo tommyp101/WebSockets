@@ -10,6 +10,10 @@ function initGame(websocket) {
     {
       event.join = params.get("join");
     }
+    else if (params.has("watch"))
+    {
+      event.watch = params.get("watch");
+    }
     websocket.send(JSON.stringify(event));
   });
 }
@@ -27,13 +31,6 @@ function sendMoves(board, websocket) {
     };
     websocket.send(JSON.stringify(event));
   });
-}
-
-
-// Recieve the event data from server, server used data from browser -> server to alter.
-function showMessage(message)
-{
-  window.setTimeout(() => window.alert(message), 50);
 }
 
 function recieveMoves(board, websocket) {
@@ -58,6 +55,13 @@ function recieveMoves(board, websocket) {
     }
   });
 }
+
+// Recieve the event data from server, server used data from browser -> server to alter.
+function showMessage(message)
+{
+  window.setTimeout(() => window.alert(message), 50);
+}
+
 
 window.addEventListener("DOMContentLoaded", () => {
   // Initialize the UI.
