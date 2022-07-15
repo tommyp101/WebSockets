@@ -39,6 +39,7 @@ function recieveMoves(board, websocket) {
     switch (event.type) {
       case "init":
         document.querySelector(".join").href = "?join=" + event.join;
+        document.querySelector(".watch").href = "?watch=" + event.watch;
         break;
       case "play":
         playMove(board, event.player, event.column, event.row);
@@ -55,6 +56,7 @@ function recieveMoves(board, websocket) {
     }
   });
 }
+
 
 // Recieve the event data from server, server used data from browser -> server to alter.
 function showMessage(message)

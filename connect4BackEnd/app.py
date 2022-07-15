@@ -4,6 +4,8 @@ import json
 import websockets
 from connect4 import PLAYER1, PLAYER2, Connect4
 import secrets # Library used to generate secure random numbers for managing secrets
+import os
+import signal
 
 JOIN = {} # Global dictionary variable that holds each join user's unique key, each key contains the game and socket connection.
 WATCH = {} # Specator Keys
@@ -108,9 +110,13 @@ async def handler(websocket):
 
 
 async def main():
-    async with websockets.serve(handler, "", 8001):
-        await asyncio.Future()  # run forever
+    loop = asyncio.get_running_loop()
+    stop = loop.create_future()
+    loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
 
+    port = int(os.environ.get("PORT", "8001"))
+    async with websockets.server(handler, "", port):
+        await stop
 
 if __name__ == "__main__":
     asyncio.run(main())
