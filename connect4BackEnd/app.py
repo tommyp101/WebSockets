@@ -65,13 +65,10 @@ async def handler(websocket):
     player = next(turns)
 
     async for message in websocket:
-        # Parse a "play" event from the UI.
         event = json.loads(message)
         assert event["type"] == "play"
         column = event["column"]
-
         try:
-            # Play the move.
             row = game.play(player, column)
         except RuntimeError as exc:
             # Send an "error" event if the move was illegal.
